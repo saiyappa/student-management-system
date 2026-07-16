@@ -13,15 +13,17 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/student_management';
+require("dotenv").config();
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://admin:Sai%4012345@cluster0.helqwnk.mongodb.net/student_management?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(MONGODB_URI)
   .then(async () => {
-    console.log('Connected to MongoDB');
+    console.log("✅ Connected to MongoDB");
     await seedDatabase();
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err);
+    console.error("❌ MongoDB connection error:", err);
   });
 
 // Seed data function
