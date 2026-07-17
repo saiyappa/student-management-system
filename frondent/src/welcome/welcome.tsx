@@ -50,7 +50,7 @@ export function Welcome() {
   const [formGpa, setFormGpa] = useState("4.00");
   const [formEnrollDate, setFormEnrollDate] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
-  
+
   // Notification Toast state
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
@@ -71,7 +71,7 @@ export function Welcome() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("/api/students/stats");
+      const res = await fetch("https://student-management-system-0vjl.onrender.com/api/students/stats");
       if (res.ok) {
         const data = await res.json();
         setStats(data);
@@ -88,7 +88,7 @@ export function Welcome() {
       if (search) queryParams.append("search", search);
       if (courseFilter) queryParams.append("course", courseFilter);
       if (statusFilter) queryParams.append("status", statusFilter);
-      
+
       let sortQuery = "createdAt_desc";
       if (sortOption === "gpa_asc") sortQuery = "gpa_asc";
       else if (sortOption === "gpa_desc") sortQuery = "gpa_desc";
@@ -96,10 +96,10 @@ export function Welcome() {
       else if (sortOption === "name_desc") sortQuery = "name_desc";
       else if (sortOption === "id_asc") sortQuery = "id_asc";
       else if (sortOption === "id_desc") sortQuery = "id_desc";
-      
+
       queryParams.append("sort", sortQuery);
 
-      const res = await fetch(`/api/students?${queryParams.toString()}`);
+      const res = await fetch(`https://student-management-system-0vjl.onrender.com/api/students?${queryParams.toString()}`)
       if (!res.ok) {
         throw new Error("Could not retrieve student registers.");
       }
@@ -164,7 +164,7 @@ export function Welcome() {
     if (!formEmail.trim() || !formEmail.includes("@")) return setFormError("A valid email address is required.");
     if (!formDob) return setFormError("Date of birth is required.");
     if (!formEnrollDate) return setFormError("Enrollment date is required.");
-    
+
     const parsedGpa = parseFloat(formGpa);
     if (isNaN(parsedGpa) || parsedGpa < 0 || parsedGpa > 4) {
       return setFormError("GPA must be a number between 0.0 and 4.0");
@@ -182,9 +182,9 @@ export function Welcome() {
     };
 
     try {
-      const url = modalMode === "add" ? "/api/students" : `/api/students/${selectedStudent?._id}`;
+      const url = modalMode === "add" ? "https://student-management-system-0vjl.onrender.com/api/students" : `https://student-management-system-0vjl.onrender.com/api/students/${selectedStudent?._id}`;
       const method = modalMode === "add" ? "POST" : "PUT";
-      
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -198,11 +198,11 @@ export function Welcome() {
 
       setIsModalOpen(false);
       triggerNotification(
-        modalMode === "add" 
-          ? `Successfully added "${formName}"` 
+        modalMode === "add"
+          ? `Successfully added "${formName}"`
           : `Successfully updated details of "${formName}"`
       );
-      
+
       fetchStudents();
       fetchStats();
     } catch (err: any) {
@@ -214,9 +214,9 @@ export function Welcome() {
     if (!confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
       return;
     }
-    
+
     try {
-      const res = await fetch(`/api/students/${id}`, { method: "DELETE" });
+      const res = await fetch(`https://student-management-system-0vjl.onrender.com/api/students/${id}`, { method: "DELETE", });
       if (res.ok) {
         triggerNotification(`Student "${name}" was deleted successfully.`);
         fetchStudents();
@@ -250,7 +250,7 @@ export function Welcome() {
   const getInitialsSvg = (name: string) => {
     const splitArr = name.split(" ");
     const initials = splitArr.map(n => n[0]).slice(0, 2).join("").toUpperCase();
-    
+
     // Select stable background gradient depending on length/letter code
     const colors = [
       "from-indigo-500 to-purple-600",
@@ -265,17 +265,15 @@ export function Welcome() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-950 dark:text-gray-100 font-sans transition-colors duration-200">
-      
+
       {/* Toast Notification */}
       {notification && (
-        <div className={`fixed right-6 top-6 z-50 flex items-center gap-3 rounded-2xl border px-5 py-4 shadow-xl transition-all duration-300 transform translate-y-0 ${
-          notification.type === "success" 
-            ? "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/40 dark:text-emerald-300"
-            : "bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/90 dark:border-rose-800/40 dark:text-rose-300"
-        }`}>
-          <div className={`flex h-8 w-8 items-center justify-center rounded-xl text-white ${
-            notification.type === "success" ? "bg-emerald-500" : "bg-rose-500"
+        <div className={`fixed right-6 top-6 z-50 flex items-center gap-3 rounded-2xl border px-5 py-4 shadow-xl transition-all duration-300 transform translate-y-0 ${notification.type === "success"
+          ? "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/40 dark:text-emerald-300"
+          : "bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/90 dark:border-rose-800/40 dark:text-rose-300"
           }`}>
+          <div className={`flex h-8 w-8 items-center justify-center rounded-xl text-white ${notification.type === "success" ? "bg-emerald-500" : "bg-rose-500"
+            }`}>
             {notification.type === "success" ? (
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
@@ -295,7 +293,7 @@ export function Welcome() {
 
       {/* Main Container */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        
+
         {/* Sleek Dashboard Header */}
         <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
@@ -329,7 +327,7 @@ export function Welcome() {
         {/* Stats Section with sleek layout */}
         {stats && (
           <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            
+
             {/* Stat Card 1: Total */}
             <div className="group relative overflow-hidden rounded-3xl border border-gray-200/80 bg-white p-6 shadow-sm dark:border-gray-800/60 dark:bg-gray-900 transition-all duration-200 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-700">
               <div className="absolute right-0 top-0 -mr-6 -mt-6 h-24 w-24 rounded-full bg-sky-500/5 group-hover:scale-110 transition-transform duration-200" />
@@ -404,15 +402,15 @@ export function Welcome() {
               </div>
               <div className="mt-4 flex items-center gap-1.5">
                 <div className="h-1.5 flex-1 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                  <div 
-                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-550" 
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-550"
                     style={{ width: `${(stats.avgGpa / 4.0) * 100}%` }}
                   />
                 </div>
                 <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400">4.0 max</span>
               </div>
             </div>
-            
+
           </section>
         )}
 
@@ -427,7 +425,7 @@ export function Welcome() {
               Course Enrollment Breakdown
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
-              
+
               {/* SVG Charts visual representation */}
               <div className="space-y-4">
                 {stats.courseDistribution.map((courseItem) => {
@@ -440,7 +438,7 @@ export function Welcome() {
                         <span className="text-gray-500 dark:text-gray-450 font-bold">{courseItem.count} {courseItem.count === 1 ? "student" : "students"}</span>
                       </div>
                       <div className="relative h-4 rounded-lg bg-gray-100 dark:bg-gray-800/80 overflow-hidden">
-                        <div 
+                        <div
                           className="h-full rounded-lg bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-500"
                           style={{ width: `${percentage}%` }}
                         />
@@ -454,7 +452,7 @@ export function Welcome() {
               <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6 dark:border-gray-800/40 dark:bg-gray-900/30 flex flex-col justify-center">
                 <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Metrics Summary</h3>
                 <p className="text-xs text-gray-550 dark:text-gray-400 mb-4 leading-relaxed">
-                  nexus academics system is presently handling enrollments over <span className="font-semibold text-indigo-500">{stats.courseDistribution.length} majors</span>. 
+                  nexus academics system is presently handling enrollments over <span className="font-semibold text-indigo-500">{stats.courseDistribution.length} majors</span>.
                   The average grade performance stands at a solid <span className="font-semibold text-emerald-500">{stats.avgGpa.toFixed(2)}</span> GPA.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
@@ -479,10 +477,10 @@ export function Welcome() {
 
         {/* Filters and List panel */}
         <section className="rounded-3xl border border-gray-200/80 bg-white shadow-sm dark:border-gray-800/60 dark:bg-gray-900 overflow-hidden">
-          
+
           {/* Filtering bar section */}
           <div className="p-6 border-b border-gray-150 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-900/30 flex flex-col gap-4 lg:flex-row lg:items-center">
-            
+
             {/* Search Input */}
             <div className="relative flex-1">
               <label htmlFor="search-students" className="sr-only">Search Students</label>
@@ -503,7 +501,7 @@ export function Welcome() {
 
             {/* Quick dropdown filters */}
             <div className="flex flex-wrap gap-3">
-              
+
               {/* Course filter select */}
               <div className="flex flex-col">
                 <label htmlFor="filter-course" className="sr-only">Filter by Course</label>
@@ -573,7 +571,7 @@ export function Welcome() {
               </div>
               <h3 className="mt-4 font-bold text-gray-800 dark:text-gray-200">Execution Error</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-440">{error}</p>
-              <button 
+              <button
                 onClick={fetchStudents}
                 className="mt-6 px-4 py-2 border rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 border-gray-300 dark:border-gray-800 font-semibold"
               >
@@ -616,7 +614,7 @@ export function Welcome() {
                     const initialsData = getInitialsSvg(student.name);
                     return (
                       <tr key={student._id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/20 transition-all duration-100 group">
-                        
+
                         {/* Student Info */}
                         <td className="py-4.5 px-6">
                           <div className="flex items-center gap-3">
@@ -624,7 +622,7 @@ export function Welcome() {
                               {initialsData.initials}
                             </div>
                             <div className="truncate">
-                              <span 
+                              <span
                                 onClick={() => openViewModal(student)}
                                 className="block font-bold text-gray-900 dark:text-white hover:text-indigo-500 dark:hover:text-indigo-400 cursor-pointer"
                               >
@@ -656,16 +654,15 @@ export function Welcome() {
                               {student.gradeOrGpa.toFixed(2)}
                             </span>
                             <div className="h-1.5 w-12 rounded-full bg-gray-100 dark:bg-gray-805 hidden sm:block overflow-hidden">
-                              <div 
-                                className={`h-full rounded-full ${
-                                  student.gradeOrGpa >= 3.5 
-                                    ? "bg-emerald-500" 
-                                    : student.gradeOrGpa >= 3.0 
-                                      ? "bg-sky-500" 
-                                      : student.gradeOrGpa >= 2.0 
-                                        ? "bg-amber-500" 
-                                        : "bg-red-500"
-                                }`} 
+                              <div
+                                className={`h-full rounded-full ${student.gradeOrGpa >= 3.5
+                                  ? "bg-emerald-500"
+                                  : student.gradeOrGpa >= 3.0
+                                    ? "bg-sky-500"
+                                    : student.gradeOrGpa >= 2.0
+                                      ? "bg-amber-500"
+                                      : "bg-red-500"
+                                  }`}
                                 style={{ width: `${(student.gradeOrGpa / 4.0) * 100}%` }}
                               />
                             </div>
@@ -682,7 +679,7 @@ export function Welcome() {
                         {/* Actions */}
                         <td className="py-4.5 px-6 text-right">
                           <div className="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                            
+
                             <button
                               onClick={() => openViewModal(student)}
                               title="View details"
@@ -716,7 +713,7 @@ export function Welcome() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                               </svg>
                             </button>
-                            
+
                           </div>
                         </td>
 
@@ -735,12 +732,12 @@ export function Welcome() {
       {/* Slide-over or Modal Overlay design */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/50 backdrop-blur-xs transition-opacity duration-300">
-          <div 
+          <div
             className="w-full max-w-lg overflow-hidden rounded-3xl border border-gray-250 bg-white shadow-2xl transition-all dark:border-gray-800 dark:bg-gray-900 transform scale-100"
             role="dialog"
             aria-modal="true"
           >
-            
+
             {/* Modal header */}
             <div className="flex items-center justify-between border-b border-gray-150 p-6 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/30">
               <h3 className="text-xl font-bold dark:text-white">
@@ -748,7 +745,7 @@ export function Welcome() {
                 {modalMode === "edit" && "Update Student Details"}
                 {modalMode === "view" && "Verify Academic File"}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="rounded-xl p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-white transition"
               >
@@ -762,7 +759,7 @@ export function Welcome() {
             {/* Modal content */}
             {modalMode === "view" && selectedStudent ? (
               <div className="p-6 space-y-6">
-                
+
                 {/* Visual Avatar block */}
                 <div className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-gray-850">
                   <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr ${getInitialsSvg(selectedStudent.name).gradient} text-white font-bold text-2xl shadow-md`}>
@@ -822,7 +819,7 @@ export function Welcome() {
               </div>
             ) : (
               <form onSubmit={saveStudent} className="p-6 space-y-4">
-                
+
                 {formError && (
                   <div className="bg-rose-50 text-rose-800 border border-rose-200 px-4 py-3 rounded-2xl text-sm dark:bg-rose-950/30 dark:border-rose-900/50 dark:text-rose-350">
                     <p className="font-semibold">Verification failure details</p>
