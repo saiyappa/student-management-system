@@ -335,19 +335,32 @@ app.put('/api/students/:id', async (req, res) => {
 });
 
 // 6. Delete student
+// Delete student
 app.delete('/api/students/:id', async (req, res) => {
   try {
     const deletedStudent = await Student.findByIdAndDelete(req.params.id);
+
     if (!deletedStudent) {
       return res.status(404).json({ error: 'Student not found' });
     }
-    res.json({ message: 'Student successfully deleted', deletedStudent });
+
+    res.json({
+      message: 'Student successfully deleted',
+      deletedStudent
+    });
+
   } catch (error) {
     console.error('Error deleting student:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+// 👇 ADD THIS HERE
+app.get("/", (req, res) => {
+  res.send("🚀 Student Management Backend Running Successfully");
+});
+
+// Existing code
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
