@@ -71,7 +71,7 @@ export function Welcome() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("https://student-management-system-0yjl.onrender.com/");
+      const res = await fetch("https://student-management-system-0vjl.onrender.com/api/students/stats");
       if (res.ok) {
         const data = await res.json();
         setStats(data);
@@ -99,7 +99,7 @@ export function Welcome() {
 
       queryParams.append("sort", sortQuery);
 
-      const res = await fetch(`https://student-management-system-0yjl.onrender.com/?${queryParams.toString()}`)
+      const res = await fetch(`https://student-management-system-0vjl.onrender.com/api/students?${queryParams.toString()}`);
       if (!res.ok) {
         throw new Error("Could not retrieve student registers.");
       }
@@ -182,7 +182,7 @@ export function Welcome() {
     };
 
     try {
-      const url = modalMode === "add" ? "https://student-management-system-0yjl.onrender.com/" : `https://student-management-system-0yjl.onrender.com/${selectedStudent?._id}`;
+     const url = modalMode === "add"? "https://student-management-system-0vjl.onrender.com/api/students": `https://student-management-system-0vjl.onrender.com/api/students/${selectedStudent?._id}`;
       const method = modalMode === "add" ? "POST" : "PUT";
 
       const res = await fetch(url, {
@@ -216,7 +216,7 @@ export function Welcome() {
     }
 
     try {
-      const res = await fetch(`https://student-management-system-0yjl.onrender.com/${id}`, { method: "DELETE", });
+      const res = await fetch(`https://student-management-system-0vjl.onrender.com/api/students/${id}`,{ method: "DELETE" });
       if (res.ok) {
         triggerNotification(`Student "${name}" was deleted successfully.`);
         fetchStudents();
